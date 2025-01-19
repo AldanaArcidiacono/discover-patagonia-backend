@@ -1,12 +1,30 @@
-Cultural Activities Management Portal
-Description:
-A platform for organizing and participating in local cultural activities:
+# Cultural Activities Management Portal
 
-Users can register and create profiles.
-Administrators can publish events (with categories such as music, art, sports).
-Users can register for events and receive notifications.
-Implement a dashboard for administrators where they manage events and attendees.
-Why it is useful:
-It allows you to practice advanced CRUD functionalities and relationships between users and events. The admin dashboard helps you develop modular components in Angular.
+### A platform for organizing and participating in local cultural activities:
 
-Translated with DeepL.com (free version)
+- Users can register and create profiles.\
+- Administrators can publish events (with categories such as music, art, sports).\
+- Users can register for events and receive notifications.\
+- Implement a dashboard for administrators where they manage events and attendees.\
+
+### Modelo de datos en SQL
+
+```
+TUser:
+    id: INT PK NN AI;
+    name: VARCHAR(15) NN;
+    surname: VARCHAR(20) NN;
+    user_name: VARCHAR(20) NN;
+    age: INT;
+    last_event_attendance: DATE;
+    email: VARCHAR(45) NN UQ;
+    password: VARCHAR(25) NN;
+```
+
+<!-- ### EndPoints
+
+#### User:
+
+- Post - ‘/register’ → Crea un usuario nuevo
+- Post - ‘/login’ → Se fija que exista el usuario en la base de datos y le devuelve un token.
+- Patch - ‘/update’ → Hay que estar logado y autenticado. Agregará a mis viajes el lugar elegido. -->
