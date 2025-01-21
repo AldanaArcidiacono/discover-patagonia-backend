@@ -1,31 +1,52 @@
 import debug from 'debug';
+import http from 'http';
 import express from 'express';
-import mysql from 'mysql';
-import { HOST, USER, PASSWORD, DATABASE } from './config.js';
+import { dbConnect } from './dbConnect.js';
 
 const msg = debug('PAT:index');
-const app = express();
+export const app = express();
 const port = 3000;
 
-const db = mysql.createConnection({
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE,
+app.use(express.json());
+const server = http.createServer(app);
+
+server.on('listening', () => {
+  const addr = server.address();
+  let bind: string;
+  if (addr === null) return;
+
+  if (typeof addr === 'string') {
+    bind = 'pipe ' + addr;
+  } else {
+    bind =
+      addr.address === '::'
+        ? `http://localhost:${addr?.port}`
+        : `port ${addr?.port}`;
+  }
+
+  debug(`Listening on: ${bind}`);
 });
 
 app.get('/', (req, res) => {
-  res.json('Hello, TypeScript Node Express!');
-});
-app.get('/users', (req, res) => {
-  const sql = 'SELECT * FROM users';
-  db.query(sql, (err, data) => {
-    if (err) return res.json('ERROR');
-    else return res.json(data);
-  });
+  res.send('Discover Patagonia API!').end();
 });
 
-app.listen(port, () => {
-  msg(`Listening on ${port}`);
-  console.log(`Server is running on http://localhost:${port}`);
-});
+dbConnect()
+  .then(() => {
+    server.listen(port, () => {
+      msg(`Listening on http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+
+// Pass to controller
+// app.get('/users', (req, res) => {
+//   const sql = 'SELECT * FROM users';
+//   db.query(sql, (err, data) => {
+//     if (err) return res.json('ERROR');
+//     else return res.json(data);
+//   });
+// });
