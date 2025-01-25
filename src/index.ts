@@ -1,31 +1,22 @@
-import debug from 'debug';
-import express from 'express';
-import mysql from 'mysql';
-import { HOST, USER, PASSWORD, DATABASE } from './config.js';
+import createDebug from 'debug';
+import http from 'http';
+import { dbConnect } from './dbConnect.js';
+import { app } from './app.js';
 
-const msg = debug('PAT:index');
-const app = express();
+const debug = createDebug('PAT:index');
 const port = 3000;
 
-const db = mysql.createConnection({
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE,
-});
+const server = http.createServer(app);
 
-app.get('/', (req, res) => {
-  res.json('Hello, TypeScript Node Express!');
-});
-app.get('/users', (req, res) => {
-  const sql = 'SELECT * FROM users';
-  db.query(sql, (err, data) => {
-    if (err) return res.json('ERROR');
-    else return res.json(data);
-  });
-});
+server.listen(port, async () => {
+    try {
+        await dbConnect();
+        debug('DB connected successfully! :)');
+    } catch (error) {
+        console.error('Error connecting to DB: ', error);
+        server.emit('error', error);
+        process.exit(1);
+    }
 
-app.listen(port, () => {
-  msg(`Listening on ${port}`);
-  console.log(`Server is running on http://localhost:${port}`);
+    debug(`Listening on http://localhost:${port}`);
 });

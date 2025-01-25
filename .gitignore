@@ -123,6 +123,7 @@ dist
 # Stores VSCode
 .vscode-test
 .vscode/settings.json
+.vscode/launch.json
 
 # yarn v2
 .yarn/cache
