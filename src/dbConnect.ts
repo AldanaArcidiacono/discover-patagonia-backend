@@ -5,15 +5,16 @@ import { HOST, USER, PASSWORD, DATABASE } from './config.js';
 const debug = createDebug('PAT:dbConnect');
 
 let connection: any;
+const dbBasicData = {
+    host: HOST,
+    user: USER,
+    password: PASSWORD,
+    database: DATABASE,
+};
 
 export function dbConnect() {
     if (!connection) {
-        connection = mysql.createConnection({
-            host: HOST,
-            user: USER,
-            password: PASSWORD,
-            database: DATABASE,
-        });
+        connection = mysql.createConnection(dbBasicData);
 
         connection.connect((err: any) => {
             if (err) {
@@ -25,3 +26,5 @@ export function dbConnect() {
     }
     return connection;
 }
+
+export const db = mysql.createPool(dbBasicData);
